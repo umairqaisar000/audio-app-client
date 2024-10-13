@@ -123,45 +123,45 @@ class _RoomCardState extends State<RoomCard> {
         _connect(context);
       },
       child: Container(
-        width: 100,
-        height: 126,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: Theme.of(context).focusColor,
+          width: 100,
+          height: 126,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Theme.of(context).focusColor,
+            ),
           ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-              child: Text(
-                widget.room.name,
-                style: Theme.of(context).textTheme.bodyLarge,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                child: Text(
+                  widget.room.name,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 4,
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: (widget.room.capacity ?? 0) < 3
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  ...List.generate(max(widget.room.users.length, 4), (index) {
-                    String initials = "";
-                    if (widget.room.users.length > index) {
-                      // Extract the user from the room's users list based on index
-                      final user = widget.room.users.values.toList()[index];
-                      // Extract initials from the user's name
-                      initials = getInitials(user.name);
-                    }
+              const SizedBox(
+                height: 4,
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: (widget.room.capacity ?? 0) < 3
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    ...List.generate(max(widget.room.users.length, 5), (index) {
+                      String initials = "";
+                      if (widget.room.users.length > index) {
+                        // Extract the user from the room's users list based on index
+                        final user = widget.room.users.values.toList()[index];
+                        // Extract initials from the user's name
+                        initials = getInitials(user.name);
+                      }
 
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
