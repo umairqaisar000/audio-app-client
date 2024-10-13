@@ -25,7 +25,6 @@ class SocketManager {
 
     socket.on("userInfo", (data) {
       debugPrint("USER INFO");
-      AppProviderContainer.userData = User(id: data['id'], name: data['name']);
       AppProviderContainer.instance
           .read(userNotifierProvider.notifier)
           .updateUser(data['id'], data['name']);

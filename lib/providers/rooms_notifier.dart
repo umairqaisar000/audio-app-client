@@ -15,33 +15,6 @@ class RoomsNotifier extends _$RoomsNotifier {
     state = roomsData.map((data) => AudioRoom.fromJson(data)).toList();
   }
 
-  void userJoinedRoom(num roomId, User user) {
-    state = [
-      for (final room in state)
-        if (room.id == roomId)
-          room.copyWith(users: [...room.users, user])
-        else
-          room
-    ];
-  }
-
-  void userLeftRoom(num roomId, num userId) {
-    state = [
-      for (final room in state)
-        if (room.id == roomId)
-          room.copyWith(users: room.users.where((id) => id != userId).toList())
-        else
-          room
-    ];
-  }
-
-  void userDisconnected(num userId) {
-    state = [
-      for (final room in state)
-        room.copyWith(users: room.users.where((id) => id != userId).toList())
-    ];
-  }
-
   AudioRoom? getRoomById(num id) {
     try {
       return state.firstWhere((room) => room.id == id);

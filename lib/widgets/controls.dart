@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:audio_app/providers/user_notifier.dart';
 import 'package:audio_app/services/room_service.dart';
 import 'package:audio_app/utils/app_data.dart';
 import 'package:collection/collection.dart';
@@ -219,7 +220,7 @@ class _ControlsWidgetState extends State<ControlsWidget> {
       try {
         //   await FlutterBackground.disableBackgroundExecution();
       } catch (error) {
-        print('error disabling screen share: $error');
+        debugPrint('error disabling screen share: $error');
       }
     }
   }
@@ -228,13 +229,11 @@ class _ControlsWidgetState extends State<ControlsWidget> {
     final result = await context.showDisconnectDialog();
     if (result == true) {
       await widget.room.disconnect();
-      print(AppProviderContainer.userData?.id);
-      print(AppProviderContainer.currentRoomId);
-      if (AppProviderContainer.userData?.id != null &&
-          AppProviderContainer.currentRoomId != null) {
+      var user = AppProviderContainer.instance.read(userNotifierProvider);
+
+      if (user != null && AppProviderContainer.currentRoomId != null) {
         debugPrint('leaving room');
-        RoomService().leaveRoom(AppProviderContainer.currentRoomId!,
-            AppProviderContainer.userData!.id);
+        RoomService().leaveRoom(AppProviderContainer.currentRoomId!, user.id);
       }
     }
   }
@@ -487,16 +486,16 @@ class _ControlsWidgetState extends State<ControlsWidget> {
             icon: const Icon(Icons.message),
             tooltip: 'send demo data',
           ),
-          IconButton(
-            onPressed: _onTapUpdateSubscribePermission,
-            icon: const Icon(Icons.settings),
-            tooltip: 'Subscribe permission',
-          ),
-          IconButton(
-            onPressed: _onTapSimulateScenario,
-            icon: const Icon(Icons.bug_report),
-            tooltip: 'Simulate scenario',
-          ),
+          // IconButton(
+          //   onPressed: _onTapUpdateSubscribePermission,
+          //   icon: const Icon(Icons.settings),
+          //   tooltip: 'Subscribe permission',
+          // ),
+          // IconButton(
+          //   onPressed: _onTapSimulateScenario,
+          //   icon: const Icon(Icons.bug_report),
+          //   tooltip: 'Simulate scenario',
+          // ),
         ],
       ),
     );

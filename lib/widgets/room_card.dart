@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:audio_app/config/endpoints.dart';
 import 'package:audio_app/models/room.dart';
+import 'package:audio_app/providers/user_notifier.dart';
 import 'package:audio_app/services/room_service.dart';
 import 'package:audio_app/utils/app_data.dart';
 import 'package:audio_app/views/call_room_view.dart';
@@ -82,26 +84,27 @@ class _RoomCardState extends State<RoomCard> {
       const url = Endpoints.liveKitSfuUrl;
 
       final roomService = RoomService();
-      if (AppProviderContainer.userData?.id != null) {
-        final response = await roomService.joinRoom(
-            widget.room.id, AppProviderContainer.userData?.id ?? 0);
+      var user = AppProviderContainer.instance.read(userNotifierProvider);
+      if (user != null) {
+        final response = await roomService.joinRoom(widget.room.id, user.id);
+        if (response != null) {
+          final token = response.data;
+          final room = Room();
+          _setEnableAudio(true);
+          // Create a Listener before connecting
+          final listener = room.createListener();
 
-        final token = response?.data;
-        final room = Room();
-        _setEnableAudio(true);
-        // Create a Listener before connecting
-        final listener = room.createListener();
+          await room.connect(url, token,
+              fastConnectOptions: FastConnectOptions(
+                microphone: TrackOption(track: _audioTrack),
+              ));
 
-        await room.connect(url, token ?? "",
-            fastConnectOptions: FastConnectOptions(
-              microphone: TrackOption(track: _audioTrack),
-            ));
-
-        await Navigator.push<void>(
-          // ignore: use_build_context_synchronously
-          context,
-          MaterialPageRoute(builder: (_) => RoomPage(room, listener)),
-        );
+          await Navigator.push<void>(
+            // ignore: use_build_context_synchronously
+            context,
+            MaterialPageRoute(builder: (_) => RoomPage(room, listener)),
+          );
+        }
       }
     } catch (error) {
       debugPrint("error:");
@@ -136,7 +139,7 @@ class _RoomCardState extends State<RoomCard> {
               padding:
                   const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
               child: Text(
-                widget.room.name ?? "",
+                widget.room.name,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
@@ -150,11 +153,11 @@ class _RoomCardState extends State<RoomCard> {
                     ? MainAxisAlignment.start
                     : MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  ...List.generate(widget.room.capacity ?? 5, (index) {
+                  ...List.generate(max(widget.room.users.length, 4), (index) {
                     String initials = "";
                     if (widget.room.users.length > index) {
                       // Extract the user from the room's users list based on index
-                      final user = widget.room.users[index];
+                      final user = widget.room.users.values.toList()[index];
                       // Extract initials from the user's name
                       initials = _getInitials(user.name);
                     }
