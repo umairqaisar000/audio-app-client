@@ -1,4 +1,3 @@
-import 'package:audio_app/models/room.dart';
 import 'package:audio_app/providers/rooms_notifier.dart';
 import 'package:audio_app/widgets/room_card.dart';
 import 'package:flutter/material.dart';
@@ -9,15 +8,10 @@ class LoungeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(roomsNotifierProvider.notifier).fetchRooms();
+    // ref.watch(roomsNotifierProvider.notifier).fetchRooms();
 
     // Access the current state of rooms
-    // final rooms = ref.watch(roomsNotifierProvider);
-    final rooms = [
-      Room(id: 1, name: "Q Core", capacity: 5),
-      Room(id: 2, name: "Q Neptune", capacity: 5),
-      Room(id: 3, name: "Hangout", capacity: 5)
-    ];
+    final rooms = ref.watch(roomsNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -33,12 +27,11 @@ class LoungeView extends ConsumerWidget {
               padding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12),
               itemBuilder: (context, index) {
-                final room = rooms[index];
+                final roomTemp = rooms[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: RoomCard(
-                    roomName: room.name,
-                    capacity: room.capacity,
+                    room: roomTemp,
                   ),
                 );
               },

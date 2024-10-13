@@ -1,5 +1,6 @@
 import 'package:audio_app/models/room.dart';
-import 'package:audio_app/services/get_rooms_service.dart';
+import 'package:audio_app/models/user.dart';
+import 'package:audio_app/services/room_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'rooms_notifier.g.dart'; // This is the generated file
@@ -7,7 +8,7 @@ part 'rooms_notifier.g.dart'; // This is the generated file
 @Riverpod(keepAlive: true)
 class RoomsNotifier extends _$RoomsNotifier {
   @override
-  List<Room> build() {
+  List<AudioRoom> build() {
     return []; // Initial state
   }
 
@@ -20,14 +21,14 @@ class RoomsNotifier extends _$RoomsNotifier {
   }
 
   void updateRooms(List<dynamic> roomsData) {
-    state = roomsData.map((data) => Room.fromJson(data)).toList();
+    state = roomsData.map((data) => AudioRoom.fromJson(data)).toList();
   }
 
-  void userJoinedRoom(num roomId, num userId) {
+  void userJoinedRoom(num roomId, User user) {
     state = [
       for (final room in state)
         if (room.id == roomId)
-          room.copyWith(users: [...room.users, userId])
+          room.copyWith(users: [...room.users, user])
         else
           room
     ];
@@ -50,7 +51,7 @@ class RoomsNotifier extends _$RoomsNotifier {
     ];
   }
 
-  Room? getRoomById(num id) {
-    return state.firstWhere((room) => room.id == id, orElse: () => Room());
+  AudioRoom? getRoomById(num id) {
+    return state.firstWhere((room) => room.id == id, orElse: () => AudioRoom());
   }
 }

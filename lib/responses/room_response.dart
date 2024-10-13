@@ -5,9 +5,9 @@ class RoomResponse {
 
   factory RoomResponse.fromJson(Map<String, dynamic> json) {
     var list = json['rooms'] as List;
-    List<Room> roomsList = list.map((i) => Room.fromJson(i)).toList();
+    List<AudioRoom> roomsList = list.map((i) => AudioRoom.fromJson(i)).toList();
     return RoomResponse(rooms: roomsList);
   }
 
-  final List<Room> rooms;
+  final List<AudioRoom> rooms;
 }
