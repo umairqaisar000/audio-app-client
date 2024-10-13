@@ -27,11 +27,10 @@ class LoungeView extends ConsumerWidget {
               padding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12),
               itemBuilder: (context, index) {
-                final roomTemp = rooms[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: RoomCard(
-                    room: roomTemp,
+                    room: rooms[index],
                   ),
                 );
               },

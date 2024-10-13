@@ -1,7 +1,7 @@
 enum Environment { local, localIP }
 
 class Endpoints {
-  static Environment currentEnvironment = Environment.localIP;
+  static Environment currentEnvironment = Environment.local;
 
   static String get url {
     switch (currentEnvironment) {
@@ -25,5 +25,5 @@ class Endpoints {
 
   static String baseUrl = url;
   static String baseSocketUrl = socketUrl;
-  static const liveKitSfuUrl = 'ws://192.168.100.114:7880';
+  static const liveKitSfuUrl = 'ws://192.168.100.222:7880';
 }

@@ -1,18 +1,18 @@
 class User {
   User({
-    this.id,
-    this.name,
+    required this.id,
+    required this.name,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'] as num?,
-      name: json['name'] as String?,
+      id: json['id'] as num,
+      name: json['name'] as String,
     );
   }
 
-  final num? id;
-  String? name;
+  final num id;
+  final String name;
 
   User copyWith({
     num? id,

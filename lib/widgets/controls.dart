@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:audio_app/services/room_service.dart';
+import 'package:audio_app/utils/app_data.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -224,7 +226,17 @@ class _ControlsWidgetState extends State<ControlsWidget> {
 
   void _onTapDisconnect() async {
     final result = await context.showDisconnectDialog();
-    if (result == true) await widget.room.disconnect();
+    if (result == true) {
+      await widget.room.disconnect();
+      print(AppProviderContainer.userData?.id);
+      print(AppProviderContainer.currentRoomId);
+      if (AppProviderContainer.userData?.id != null &&
+          AppProviderContainer.currentRoomId != null) {
+        debugPrint('leaving room');
+        RoomService().leaveRoom(AppProviderContainer.currentRoomId!,
+            AppProviderContainer.userData!.id);
+      }
+    }
   }
 
   void _onTapUpdateSubscribePermission() async {

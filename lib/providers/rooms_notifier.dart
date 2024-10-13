@@ -1,6 +1,5 @@
 import 'package:audio_app/models/room.dart';
 import 'package:audio_app/models/user.dart';
-import 'package:audio_app/services/room_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'rooms_notifier.g.dart'; // This is the generated file
@@ -10,14 +9,6 @@ class RoomsNotifier extends _$RoomsNotifier {
   @override
   List<AudioRoom> build() {
     return []; // Initial state
-  }
-
-  Future<void> fetchRooms() async {
-    final roomService = RoomService();
-    final response = await roomService.getRoom();
-    if (response != null) {
-      state = response.rooms;
-    }
   }
 
   void updateRooms(List<dynamic> roomsData) {
@@ -52,6 +43,10 @@ class RoomsNotifier extends _$RoomsNotifier {
   }
 
   AudioRoom? getRoomById(num id) {
-    return state.firstWhere((room) => room.id == id, orElse: () => AudioRoom());
+    try {
+      return state.firstWhere((room) => room.id == id);
+    } catch (e) {
+      return null;
+    }
   }
 }

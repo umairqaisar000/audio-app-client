@@ -84,11 +84,10 @@ class _RoomCardState extends State<RoomCard> {
       final roomService = RoomService();
       if (AppProviderContainer.userData?.id != null) {
         final response = await roomService.joinRoom(
-            widget.room.id ?? 0, AppProviderContainer.userData?.id ?? 0);
+            widget.room.id, AppProviderContainer.userData?.id ?? 0);
 
         final token = response?.data;
         final room = Room();
-
         _setEnableAudio(true);
         // Create a Listener before connecting
         final listener = room.createListener();
@@ -105,8 +104,8 @@ class _RoomCardState extends State<RoomCard> {
         );
       }
     } catch (error) {
-      print("error:");
-      print(error);
+      debugPrint("error:");
+      debugPrint("error: $error");
     }
 
     // const token =
@@ -144,25 +143,57 @@ class _RoomCardState extends State<RoomCard> {
             const SizedBox(
               height: 4,
             ),
-            Row(
-              mainAxisAlignment: (widget.room.capacity ?? 0) < 3
-                  ? MainAxisAlignment.start
-                  : MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                ...List.generate(widget.room.capacity ?? 5, (index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: CircleAvatar(
-                      radius: 32,
-                      backgroundColor: Theme.of(context).focusColor,
-                    ),
-                  );
-                })
-              ],
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: (widget.room.capacity ?? 0) < 3
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  ...List.generate(widget.room.capacity ?? 5, (index) {
+                    String initials = "";
+                    if (widget.room.users.length > index) {
+                      // Extract the user from the room's users list based on index
+                      final user = widget.room.users[index];
+                      // Extract initials from the user's name
+                      initials = _getInitials(user.name);
+                    }
+
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: CircleAvatar(
+                        radius: 32,
+                        backgroundColor: Theme.of(context).focusColor,
+                        child: Text(
+                          initials,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    );
+                  })
+                ],
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+}
+
+// Function to extract initials
+String _getInitials(String name) {
+  List<String> nameParts = name.split(' ');
+  if (nameParts.length == 1) {
+    // If the user has only one name part, return the first letter
+    return nameParts.first.substring(0, 1).toUpperCase();
+  } else {
+    // If the user has multiple name parts, return the initials of the first and last parts
+    return nameParts.first.substring(0, 1).toUpperCase() +
+        nameParts.last.substring(0, 1).toUpperCase();
   }
 }
