@@ -1,11 +1,11 @@
+import 'package:audio_app/utils/utils.dart';
+import 'package:audio_app/widgets/audio_user_widget.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:livekit_client/livekit_client.dart';
 
-import 'no_video.dart';
 import 'participant_info.dart';
-import 'participant_stats.dart';
 
 abstract class ParticipantWidget extends StatefulWidget {
   // Convenience method to return relevant widget for participant
@@ -88,6 +88,7 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
   @override
   void initState() {
     super.initState();
+
     _listener = widget.participant.createListener();
     _listener?.on<TranscriptionEvent>((e) {
       for (var seg in e.segments) {
@@ -144,36 +145,37 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
                       activeVideoTrack!,
                       fit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
                     )
-                  : const NoVideoWidget(),
+                  : AudioUserWidget(
+                      userName: getInitials(widget.participant.identity)),
             ),
-            if (widget.showStatsLayer)
-              Positioned(
-                  top: 30,
-                  right: 30,
-                  child: ParticipantStatsWidget(
-                    participant: widget.participant,
-                  )),
+            // if (widget.showStatsLayer)
+            //   Positioned(
+            //       top: 30,
+            //       right: 30,
+            //       child: ParticipantStatsWidget(
+            //         participant: widget.participant,
+            //       )),
             // Bottom bar
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ...extraWidgets(isScreenShare),
-                  ParticipantInfoWidget(
-                    title: widget.participant.name.isNotEmpty
-                        ? '${widget.participant.name} (${widget.participant.identity})'
-                        : widget.participant.identity,
-                    audioAvailable: audioPublication?.muted == false &&
-                        audioPublication?.subscribed == true,
-                    connectionQuality: widget.participant.connectionQuality,
-                    isScreenShare: isScreenShare,
-                    enabledE2EE: widget.participant.isEncrypted,
-                  ),
-                ],
-              ),
-            ),
+            // Align(
+            //   alignment: Alignment.bottomCenter,
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.stretch,
+            //     mainAxisSize: MainAxisSize.min,
+            //     children: [
+            //       ...extraWidgets(isScreenShare),
+            //       ParticipantInfoWidget(
+            //         title: widget.participant.name.isNotEmpty
+            //             ? '${widget.participant.name} (${widget.participant.identity})'
+            //             : widget.participant.identity,
+            //         audioAvailable: audioPublication?.muted == false &&
+            //             audioPublication?.subscribed == true,
+            //         connectionQuality: widget.participant.connectionQuality,
+            //         isScreenShare: isScreenShare,
+            //         enabledE2EE: widget.participant.isEncrypted,
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       );

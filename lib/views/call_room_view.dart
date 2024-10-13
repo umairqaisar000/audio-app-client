@@ -164,6 +164,7 @@ class _RoomPageState extends State<RoomPage> {
   void _sortParticipants() {
     List<ParticipantTrack> userMediaTracks = [];
     List<ParticipantTrack> screenTracks = [];
+    List<ParticipantTrack> audioTracks = [];
     for (var participant in widget.room.remoteParticipants.values) {
       for (var t in participant.videoTrackPublications) {
         if (t.isScreenShare) {
@@ -175,10 +176,12 @@ class _RoomPageState extends State<RoomPage> {
           userMediaTracks.add(ParticipantTrack(participant: participant));
         }
       }
+      for (var t in participant.audioTrackPublications) {
+        audioTracks.add(ParticipantTrack(participant: participant));
+      }
     }
-    // sort speakers for the grid
+
     userMediaTracks.sort((a, b) {
-      // loudest speaker first
       if (a.participant.isSpeaking && b.participant.isSpeaking) {
         if (a.participant.audioLevel > b.participant.audioLevel) {
           return -1;
@@ -187,7 +190,6 @@ class _RoomPageState extends State<RoomPage> {
         }
       }
 
-      // last spoken at
       final aSpokeAt = a.participant.lastSpokeAt?.millisecondsSinceEpoch ?? 0;
       final bSpokeAt = b.participant.lastSpokeAt?.millisecondsSinceEpoch ?? 0;
 
@@ -195,12 +197,10 @@ class _RoomPageState extends State<RoomPage> {
         return aSpokeAt > bSpokeAt ? -1 : 1;
       }
 
-      // video on
       if (a.participant.hasVideo != b.participant.hasVideo) {
         return a.participant.hasVideo ? -1 : 1;
       }
 
-      // joinedAt
       return a.participant.joinedAt.millisecondsSinceEpoch -
           b.participant.joinedAt.millisecondsSinceEpoch;
     });
@@ -213,7 +213,6 @@ class _RoomPageState extends State<RoomPage> {
           if (lkPlatformIs(PlatformType.iOS)) {
             if (!_flagStartedReplayKit) {
               _flagStartedReplayKit = true;
-
               ReplayKitChannel.startReplayKit();
             }
           }
@@ -225,7 +224,6 @@ class _RoomPageState extends State<RoomPage> {
           if (lkPlatformIs(PlatformType.iOS)) {
             if (_flagStartedReplayKit) {
               _flagStartedReplayKit = false;
-
               ReplayKitChannel.closeReplayKit();
             }
           }
@@ -235,8 +233,20 @@ class _RoomPageState extends State<RoomPage> {
         }
       }
     }
+
+    final localAudioTracks =
+        widget.room.localParticipant?.audioTrackPublications;
+    if (localAudioTracks != null) {
+      for (var t in localAudioTracks) {
+        audioTracks.add(ParticipantTrack(
+          participant: widget.room.localParticipant!,
+        ));
+      }
+    }
+
     setState(() {
-      participantTracks = [...screenTracks, ...userMediaTracks];
+      // participantTracks = [...screenTracks, ...userMediaTracks, ...audioTracks];
+      participantTracks = [...audioTracks];
     });
   }
 
@@ -249,7 +259,7 @@ class _RoomPageState extends State<RoomPage> {
                 Expanded(
                     child: participantTracks.isNotEmpty
                         ? ParticipantWidget.widgetFor(participantTracks.first,
-                            showStatsLayer: true)
+                            showStatsLayer: false)
                         : Container()),
                 if (widget.room.localParticipant != null)
                   SafeArea(

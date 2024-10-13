@@ -297,207 +297,288 @@ class _ControlsWidgetState extends State<ControlsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 15,
-        horizontal: 15,
-      ),
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        spacing: 5,
-        runSpacing: 5,
-        children: [
-          IconButton(
-            onPressed: _unpublishAll,
-            icon: const Icon(Icons.cancel),
-            tooltip: 'Unpublish all',
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          border: Border.all(
+            color: Theme.of(context).focusColor,
+            width: 2,
           ),
-          if (participant.isMicrophoneEnabled())
-            if (lkPlatformIs(PlatformType.android))
-              IconButton(
-                onPressed: _disableAudio,
-                icon: const Icon(Icons.mic),
-                tooltip: 'mute audio',
-              )
-            else
-              PopupMenuButton<MediaDevice>(
-                icon: const Icon(Icons.settings_voice),
-                itemBuilder: (BuildContext context) {
-                  return [
-                    PopupMenuItem<MediaDevice>(
-                      value: null,
-                      onTap: isMuted ? _enableAudio : _disableAudio,
-                      child: const ListTile(
-                        leading: Icon(
-                          Icons.mic_off,
-                          color: Colors.white,
-                        ),
-                        title: Text('Mute Microphone'),
-                      ),
-                    ),
-                    if (_audioInputs != null)
-                      ..._audioInputs!.map((device) {
-                        return PopupMenuItem<MediaDevice>(
-                          value: device,
-                          child: ListTile(
-                            leading: (device.deviceId ==
-                                    widget.room.selectedAudioInputDeviceId)
-                                ? const Icon(
-                                    Icons.check_box_outlined,
-                                    color: Colors.white,
-                                  )
-                                : const Icon(
-                                    Icons.check_box_outline_blank,
-                                    color: Colors.white,
-                                  ),
-                            title: Text(device.label),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 15,
+            horizontal: 15,
+          ),
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 5,
+            runSpacing: 5,
+            children: [
+              // IconButton(
+              //   onPressed: _unpublishAll,
+              //   icon: const Icon(Icons.cancel),
+              //   tooltip: 'Unpublish all',
+              // ),
+              if (participant.isMicrophoneEnabled())
+                if (lkPlatformIs(PlatformType.android))
+                  IconButton(
+                    onPressed: _disableAudio,
+                    icon: const Icon(Icons.mic),
+                    tooltip: 'mute audio',
+                  )
+                else
+                  PopupMenuButton<MediaDevice>(
+                    icon: const Icon(Icons.settings_voice),
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        PopupMenuItem<MediaDevice>(
+                          value: null,
+                          onTap: isMuted ? _enableAudio : _disableAudio,
+                          child: const ListTile(
+                            leading: Icon(
+                              Icons.mic_off,
+                              color: Colors.white,
+                            ),
+                            title: Text('Mute Microphone'),
                           ),
-                          onTap: () => _selectAudioInput(device),
-                        );
-                      })
-                  ];
-                },
-              )
-          else
-            IconButton(
-              onPressed: _enableAudio,
-              icon: const Icon(Icons.mic_off),
-              tooltip: 'un-mute audio',
-            ),
-          if (!lkPlatformIs(PlatformType.iOS))
-            PopupMenuButton<MediaDevice>(
-              icon: const Icon(Icons.volume_up),
-              itemBuilder: (BuildContext context) {
-                return [
-                  const PopupMenuItem<MediaDevice>(
-                    value: null,
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.speaker,
-                        color: Colors.white,
-                      ),
-                      title: Text('Select Audio Output'),
-                    ),
-                  ),
-                  if (_audioOutputs != null)
-                    ..._audioOutputs!.map((device) {
-                      return PopupMenuItem<MediaDevice>(
-                        value: device,
-                        child: ListTile(
-                          leading: (device.deviceId ==
-                                  widget.room.selectedAudioOutputDeviceId)
-                              ? const Icon(
-                                  Icons.check_box_outlined,
-                                  color: Colors.white,
-                                )
-                              : const Icon(
-                                  Icons.check_box_outline_blank,
-                                  color: Colors.white,
-                                ),
-                          title: Text(device.label),
                         ),
-                        onTap: () => _selectAudioOutput(device),
-                      );
-                    })
-                ];
-              },
-            ),
-          if (!kIsWeb && lkPlatformIs(PlatformType.iOS))
-            IconButton(
-              disabledColor: Colors.grey,
-              onPressed: Hardware.instance.canSwitchSpeakerphone
-                  ? _setSpeakerphoneOn
-                  : null,
-              icon: Icon(
-                  _speakerphoneOn ? Icons.speaker_phone : Icons.phone_android),
-              tooltip: 'Switch SpeakerPhone',
-            ),
-          if (participant.isCameraEnabled())
-            PopupMenuButton<MediaDevice>(
-              icon: const Icon(Icons.videocam_sharp),
-              itemBuilder: (BuildContext context) {
-                return [
-                  PopupMenuItem<MediaDevice>(
-                    value: null,
-                    onTap: _disableVideo,
-                    child: const ListTile(
-                      leading: Icon(
-                        Icons.videocam_off,
-                        color: Colors.white,
-                      ),
-                      title: Text('Disable Camera'),
-                    ),
-                  ),
-                  if (_videoInputs != null)
-                    ..._videoInputs!.map((device) {
-                      return PopupMenuItem<MediaDevice>(
-                        value: device,
+                        if (_audioInputs != null)
+                          ..._audioInputs!.map((device) {
+                            return PopupMenuItem<MediaDevice>(
+                              value: device,
+                              child: ListTile(
+                                leading: (device.deviceId ==
+                                        widget.room.selectedAudioInputDeviceId)
+                                    ? const Icon(
+                                        Icons.check_box_outlined,
+                                        color: Colors.white,
+                                      )
+                                    : const Icon(
+                                        Icons.check_box_outline_blank,
+                                        color: Colors.white,
+                                      ),
+                                title: Text(device.label),
+                              ),
+                              onTap: () => _selectAudioInput(device),
+                            );
+                          })
+                      ];
+                    },
+                  )
+              else
+                IconButton(
+                  onPressed: _enableAudio,
+                  icon: const Icon(Icons.mic_off),
+                  tooltip: 'un-mute audio',
+                ),
+              if (!lkPlatformIs(PlatformType.iOS))
+                PopupMenuButton<MediaDevice>(
+                  icon: const Icon(Icons.volume_up),
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      const PopupMenuItem<MediaDevice>(
+                        value: null,
                         child: ListTile(
-                          leading: (device.deviceId ==
-                                  widget.room.selectedVideoInputDeviceId)
-                              ? const Icon(
-                                  Icons.check_box_outlined,
-                                  color: Colors.white,
-                                )
-                              : const Icon(
-                                  Icons.check_box_outline_blank,
-                                  color: Colors.white,
-                                ),
-                          title: Text(device.label),
+                          leading: Icon(
+                            Icons.speaker,
+                            color: Colors.white,
+                          ),
+                          title: Text('Select Audio Output'),
                         ),
-                        onTap: () => _selectVideoInput(device),
-                      );
-                    })
-                ];
-              },
-            )
-          else
-            IconButton(
-              onPressed: _enableVideo,
-              icon: const Icon(Icons.videocam_off),
-              tooltip: 'un-mute video',
-            ),
-          IconButton(
-            icon: Icon(position == CameraPosition.back
-                ? Icons.video_camera_back
-                : Icons.video_camera_front),
-            onPressed: () => _toggleCamera(),
-            tooltip: 'toggle camera',
+                      ),
+                      if (_audioOutputs != null)
+                        ..._audioOutputs!.map((device) {
+                          return PopupMenuItem<MediaDevice>(
+                            value: device,
+                            child: ListTile(
+                              leading: (device.deviceId ==
+                                      widget.room.selectedAudioOutputDeviceId)
+                                  ? const Icon(
+                                      Icons.check_box_outlined,
+                                      color: Colors.white,
+                                    )
+                                  : const Icon(
+                                      Icons.check_box_outline_blank,
+                                      color: Colors.white,
+                                    ),
+                              title: Text(device.label),
+                            ),
+                            onTap: () => _selectAudioOutput(device),
+                          );
+                        })
+                    ];
+                  },
+                ),
+              if (!kIsWeb && lkPlatformIs(PlatformType.iOS))
+                IconButton(
+                  disabledColor: Colors.grey,
+                  onPressed: Hardware.instance.canSwitchSpeakerphone
+                      ? _setSpeakerphoneOn
+                      : null,
+                  icon: Icon(_speakerphoneOn
+                      ? Icons.speaker_phone
+                      : Icons.phone_android),
+                  tooltip: 'Switch SpeakerPhone',
+                ),
+              if (participant.isCameraEnabled())
+                PopupMenuButton<MediaDevice>(
+                  icon: const Icon(Icons.videocam_sharp),
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      PopupMenuItem<MediaDevice>(
+                        value: null,
+                        onTap: _disableVideo,
+                        child: const ListTile(
+                          leading: Icon(
+                            Icons.videocam_off,
+                            color: Colors.white,
+                          ),
+                          title: Text('Disable Camera'),
+                        ),
+                      ),
+                      if (_videoInputs != null)
+                        ..._videoInputs!.map((device) {
+                          return PopupMenuItem<MediaDevice>(
+                            value: device,
+                            child: ListTile(
+                              leading: (device.deviceId ==
+                                      widget.room.selectedVideoInputDeviceId)
+                                  ? const Icon(
+                                      Icons.check_box_outlined,
+                                      color: Colors.white,
+                                    )
+                                  : const Icon(
+                                      Icons.check_box_outline_blank,
+                                      color: Colors.white,
+                                    ),
+                              title: Text(device.label),
+                            ),
+                            onTap: () => _selectVideoInput(device),
+                          );
+                        })
+                    ];
+                  },
+                )
+              else
+                IconButton(
+                  onPressed: _enableVideo,
+                  icon: const Icon(Icons.videocam_off),
+                  tooltip: 'un-mute video',
+                ),
+              IconButton(
+                icon: Icon(position == CameraPosition.back
+                    ? Icons.video_camera_back
+                    : Icons.video_camera_front),
+                onPressed: () => _toggleCamera(),
+                tooltip: 'toggle camera',
+              ),
+              // if (participant.isScreenShareEnabled())
+              //   IconButton(
+              //     icon: const Icon(Icons.monitor_outlined),
+              //     onPressed: () => _disableScreenShare(),
+              //     tooltip: 'unshare screen (experimental)',
+              //   )
+              // else
+              //   IconButton(
+              //     icon: const Icon(Icons.monitor),
+              //     onPressed: () => _enableScreenShare(),
+              //     tooltip: 'share screen (experimental)',
+              //   ),
+              IconButton(
+                onPressed: _onTapDisconnect,
+                icon: const Icon(Icons.close_sharp),
+                tooltip: 'disconnect',
+              ),
+              // if (participant.isCameraEnabled())
+              //   PopupMenuButton<MediaDevice>(
+              //     icon: const Icon(Icons.videocam_sharp),
+              //     itemBuilder: (BuildContext context) {
+              //       return [
+              //         PopupMenuItem<MediaDevice>(
+              //           value: null,
+              //           onTap: _disableVideo,
+              //           child: const ListTile(
+              //             leading: Icon(
+              //               Icons.videocam_off,
+              //               color: Colors.white,
+              //             ),
+              //             title: Text('Disable Camera'),
+              //           ),
+              //         ),
+              //         if (_videoInputs != null)
+              //           ..._videoInputs!.map((device) {
+              //             return PopupMenuItem<MediaDevice>(
+              //               value: device,
+              //               child: ListTile(
+              //                 leading: (device.deviceId ==
+              //                         widget.room.selectedVideoInputDeviceId)
+              //                     ? const Icon(
+              //                         Icons.check_box_outlined,
+              //                         color: Colors.white,
+              //                       )
+              //                     : const Icon(
+              //                         Icons.check_box_outline_blank,
+              //                         color: Colors.white,
+              //                       ),
+              //                 title: Text(device.label),
+              //               ),
+              //               onTap: () => _selectVideoInput(device),
+              //             );
+              //           })
+              //       ];
+              //     },
+              //   )
+              // else
+              //   IconButton(
+              //     onPressed: _enableVideo,
+              //     icon: const Icon(Icons.videocam_off),
+              //     tooltip: 'un-mute video',
+              //   ),
+              // IconButton(
+              //   icon: Icon(position == CameraPosition.back
+              //       ? Icons.video_camera_back
+              //       : Icons.video_camera_front),
+              //   onPressed: () => _toggleCamera(),
+              //   tooltip: 'toggle camera',
+              // ),
+              // if (participant.isScreenShareEnabled())
+              //   IconButton(
+              //     icon: const Icon(Icons.monitor_outlined),
+              //     onPressed: () => _disableScreenShare(),
+              //     tooltip: 'unshare screen (experimental)',
+              //   )
+              // else
+              //   IconButton(
+              //     icon: const Icon(Icons.monitor),
+              //     onPressed: () => _enableScreenShare(),
+              //     tooltip: 'share screen (experimental)',
+              //   ),
+              // IconButton(
+              //   onPressed: _onTapDisconnect,
+              //   icon: const Icon(Icons.close_sharp),
+              //   tooltip: 'disconnect',
+              // ),
+              // IconButton(
+              //   onPressed: _onTapSendData,
+              //   icon: const Icon(Icons.message),
+              //   tooltip: 'send demo data',
+              // ),
+              // IconButton(
+              //   onPressed: _onTapUpdateSubscribePermission,
+              //   icon: const Icon(Icons.settings),
+              //   tooltip: 'Subscribe permission',
+              // ),
+              // IconButton(
+              //   onPressed: _onTapSimulateScenario,
+              //   icon: const Icon(Icons.bug_report),
+              //   tooltip: 'Simulate scenario',
+              // ),
+            ],
           ),
-          if (participant.isScreenShareEnabled())
-            IconButton(
-              icon: const Icon(Icons.monitor_outlined),
-              onPressed: () => _disableScreenShare(),
-              tooltip: 'unshare screen (experimental)',
-            )
-          else
-            IconButton(
-              icon: const Icon(Icons.monitor),
-              onPressed: () => _enableScreenShare(),
-              tooltip: 'share screen (experimental)',
-            ),
-          IconButton(
-            onPressed: _onTapDisconnect,
-            icon: const Icon(Icons.close_sharp),
-            tooltip: 'disconnect',
-          ),
-          IconButton(
-            onPressed: _onTapSendData,
-            icon: const Icon(Icons.message),
-            tooltip: 'send demo data',
-          ),
-          // IconButton(
-          //   onPressed: _onTapUpdateSubscribePermission,
-          //   icon: const Icon(Icons.settings),
-          //   tooltip: 'Subscribe permission',
-          // ),
-          // IconButton(
-          //   onPressed: _onTapSimulateScenario,
-          //   icon: const Icon(Icons.bug_report),
-          //   tooltip: 'Simulate scenario',
-          // ),
-        ],
-      ),
-    );
+        ));
   }
 }

@@ -6,6 +6,7 @@ import 'package:audio_app/models/room.dart';
 import 'package:audio_app/providers/user_notifier.dart';
 import 'package:audio_app/services/room_service.dart';
 import 'package:audio_app/utils/app_data.dart';
+import 'package:audio_app/utils/utils.dart';
 import 'package:audio_app/views/call_room_view.dart';
 import 'package:flutter/material.dart';
 import 'package:livekit_client/livekit_client.dart';
@@ -159,44 +160,30 @@ class _RoomCardState extends State<RoomCard> {
                       // Extract the user from the room's users list based on index
                       final user = widget.room.users.values.toList()[index];
                       // Extract initials from the user's name
-                      initials = _getInitials(user.name);
+                      initials = getInitials(user.name);
                     }
 
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: CircleAvatar(
-                        radius: 32,
-                        backgroundColor: Theme.of(context).focusColor,
-                        child: Text(
-                          initials,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: CircleAvatar(
+                          radius: 32,
+                          backgroundColor: Theme.of(context).focusColor,
+                          child: Text(
+                            initials,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  })
-                ],
+                      );
+                    })
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          )),
     );
-  }
-}
-
-// Function to extract initials
-String _getInitials(String name) {
-  List<String> nameParts = name.split(' ');
-  if (nameParts.length == 1) {
-    // If the user has only one name part, return the first letter
-    return nameParts.first.substring(0, 1).toUpperCase();
-  } else {
-    // If the user has multiple name parts, return the initials of the first and last parts
-    return nameParts.first.substring(0, 1).toUpperCase() +
-        nameParts.last.substring(0, 1).toUpperCase();
   }
 }
