@@ -31,6 +31,7 @@ class _RoomPageState extends State<RoomPage> {
   EventsListener<RoomEvent> get _listener => widget.listener;
   bool get fastConnection => widget.room.engine.fastConnectOptions != null;
   bool _flagStartedReplayKit = false;
+
   @override
   void initState() {
     super.initState();

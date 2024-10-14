@@ -43,6 +43,7 @@ class _ControlsWidgetState extends State<ControlsWidget> {
   @override
   void initState() {
     super.initState();
+    participant.setMicrophoneEnabled(true);
     participant.addListener(_onChange);
     _subscription = Hardware.instance.onDeviceChange.stream
         .listen((List<MediaDevice> devices) {

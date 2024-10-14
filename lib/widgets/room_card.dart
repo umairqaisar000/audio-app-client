@@ -94,10 +94,10 @@ class _RoomCardState extends State<RoomCard> {
           _setEnableAudio(true);
           // Create a Listener before connecting
           final listener = room.createListener();
-
+          await _audioTrack?.enable();
           await room.connect(url, token,
               fastConnectOptions: FastConnectOptions(
-                microphone: TrackOption(track: _audioTrack),
+                microphone: TrackOption(track: _audioTrack, enabled: true),
               ));
 
           await Navigator.push<void>(
