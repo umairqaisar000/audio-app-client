@@ -235,6 +235,8 @@ class _ControlsWidgetState extends State<ControlsWidget> {
       if (user != null && AppProviderContainer.currentRoomId != null) {
         debugPrint('leaving room');
         RoomService().leaveRoom(AppProviderContainer.currentRoomId!, user.id);
+        AppProviderContainer.currentRoomId = null;
+        AppProviderContainer.currentRoom = null;
       }
     }
   }

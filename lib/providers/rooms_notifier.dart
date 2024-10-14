@@ -1,5 +1,4 @@
 import 'package:audio_app/models/room.dart';
-import 'package:audio_app/models/user.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'rooms_notifier.g.dart'; // This is the generated file

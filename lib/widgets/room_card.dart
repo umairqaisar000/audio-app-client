@@ -82,6 +82,25 @@ class _RoomCardState extends State<RoomCard> {
 
   Future<void> _connect(BuildContext context) async {
     try {
+      if (widget.room.id.toString() == AppProviderContainer.currentRoom?.name) {
+        await Navigator.push<void>(
+          // ignore: use_build_context_synchronously
+          context,
+          MaterialPageRoute(
+              builder: (_) => RoomPage(AppProviderContainer.currentRoom!,
+                  AppProviderContainer.listener!)),
+        );
+        return;
+      } else if (AppProviderContainer.currentRoom != null) {
+        await AppProviderContainer.currentRoom!.disconnect();
+        var user = AppProviderContainer.instance.read(userNotifierProvider);
+
+        if (user != null && AppProviderContainer.currentRoomId != null) {
+          debugPrint('leaving room');
+          await RoomService()
+              .leaveRoom(AppProviderContainer.currentRoomId!, user.id);
+        }
+      }
       const url = Endpoints.liveKitSfuUrl;
 
       final roomService = RoomService();
@@ -99,7 +118,8 @@ class _RoomCardState extends State<RoomCard> {
               fastConnectOptions: FastConnectOptions(
                 microphone: TrackOption(track: _audioTrack, enabled: true),
               ));
-
+          AppProviderContainer.currentRoom = room;
+          AppProviderContainer.listener = listener;
           await Navigator.push<void>(
             // ignore: use_build_context_synchronously
             context,

@@ -8,7 +8,7 @@ class Endpoints {
       case Environment.local:
         return 'http://127.0.0.1:3000';
       case Environment.localIP:
-        return "http://192.168.100.114:3000";
+        return "http://192.168.100.222:3000";
     }
   }
 
@@ -17,7 +17,7 @@ class Endpoints {
       case Environment.local:
         return 'http://127.0.0.1:3000';
       case Environment.localIP:
-        return 'http://192.168.100.114:3000';
+        return 'http://192.168.100.222:3000';
       default:
         return 'ws://localhost:3000';
     }
@@ -25,5 +25,5 @@ class Endpoints {
 
   static String baseUrl = url;
   static String baseSocketUrl = socketUrl;
-  static const liveKitSfuUrl = 'ws://192.168.100.114:7880';
+  static const liveKitSfuUrl = 'ws://192.168.100.222:7880';
 }
