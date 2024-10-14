@@ -4,26 +4,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'active_user_notifier.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class ActiveUserNotifier extends _$ActiveUserNotifier {
   @override
   List<User> build() {
     return [];
   }
 
-  void addUser(User user) {
-    state = [...state, user];
-  }
-
-  void removeUser(num id) {
-    state = state.where((user) => user.id != id).toList();
-  }
-
-  void setUsers(List<User> users) {
-    state = users;
-  }
-
-  void clearUsers() {
-    state = [];
+  void setUsers(List<dynamic> activeUserData) {
+    print(activeUserData);
+    state = activeUserData.map((data) => User.fromJson(data)).toList();
   }
 }

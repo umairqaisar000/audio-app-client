@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
+  if (!SocketManager.isSocketInitialized) {
+    SocketManager.initSocket();
+  }
+
   runApp(UncontrolledProviderScope(
       container: AppProviderContainer.instance, child: const MyApp()));
 }
@@ -34,10 +38,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    if (!SocketManager.isSocketInitialized) {
-      SocketManager.initSocket();
-    }
-
     return MaterialApp(
       title: 'Audio Call Pro',
       theme: darkTheme,

@@ -1,5 +1,4 @@
 import 'package:audio_app/config/endpoints.dart';
-import 'package:audio_app/models/user.dart';
 import 'package:audio_app/providers/active_user_notifier.dart';
 import 'package:audio_app/providers/rooms_notifier.dart';
 import 'package:audio_app/providers/user_notifier.dart';
@@ -32,9 +31,9 @@ class SocketManager {
     });
 
     socket.on('allUsers', (data) {
-      List<User> users =
-          (data as List).map((user) => User.fromJson(user)).toList();
-      AppProviderContainer.instance.read(activeUserNotifierProvider.notifier).setUsers(users);
+      AppProviderContainer.instance
+          .read(activeUserNotifierProvider.notifier)
+          .setUsers(data);
     });
 
     socket.on("roomsUserInfo", (data) {

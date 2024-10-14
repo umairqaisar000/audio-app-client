@@ -12,9 +12,9 @@ class LoungeView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // ref.watch(roomsNotifierProvider.notifier).fetchRooms();
     final activeUsers = ref.watch(activeUserNotifierProvider);
-
     // Access the current state of rooms
     final rooms = ref.watch(roomsNotifierProvider);
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(
