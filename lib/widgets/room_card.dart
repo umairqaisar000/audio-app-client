@@ -131,9 +131,6 @@ class _RoomCardState extends State<RoomCard> {
       debugPrint("error:");
       debugPrint("error: $error");
     }
-
-    // const token =
-    //     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg2NDU1NjcsImlzcyI6ImRldmtleSIsIm5hbWUiOiJ1bWFpciIsIm5iZiI6MTcyODU1OTE2Nywic3ViIjoidW1haXIiLCJ2aWRlbyI6eyJyb29tIjoicWNvcmUiLCJyb29tSm9pbiI6dHJ1ZX19.fE6Oeip6jWM6018pnT5mU9gf-uNFMjE1PnGdWnGt4ws';
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audio_app/Theme/dark_theme.dart';
 import 'package:audio_app/socket/init.dart';
 import 'package:audio_app/utils/app_data.dart';
@@ -5,6 +7,7 @@ import 'package:audio_app/views/home_view.dart';
 import 'package:audio_app/views/lounge_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:livekit_client/livekit_client.dart';
 
 void main() {
   if (!SocketManager.isSocketInitialized) {
@@ -34,6 +37,28 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Future.delayed(const Duration(seconds: 3), () {
+    //   AppProviderContainer.allRooms.forEach((key, value) {
+    //     // Also subscribe to tracks published before participant joined
+    //     for (RemoteParticipant participant in value.remoteParticipants.values) {
+    //       for (RemoteTrackPublication publication
+    //           in participant.trackPublications.values) {
+    //         unawaited(publication.subscribe());
+    //       }
+    //     }
+    //   });
+    //   AppProviderContainer.allRoomsListeners.forEach((key, value) {
+    //     value.on<TrackPublishedEvent>((e) {
+    //       print("PUBLISHED");
+    //       unawaited(e.publication.subscribe());
+    //     });
+    //   });
+    // });
   }
 
   @override

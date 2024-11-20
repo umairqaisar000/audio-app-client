@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:audio_app/providers/user_notifier.dart';
 import 'package:audio_app/services/room_service.dart';
 import 'package:audio_app/utils/app_data.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';

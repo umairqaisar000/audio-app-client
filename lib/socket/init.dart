@@ -2,6 +2,7 @@ import 'package:audio_app/config/endpoints.dart';
 import 'package:audio_app/providers/active_user_notifier.dart';
 import 'package:audio_app/providers/rooms_notifier.dart';
 import 'package:audio_app/providers/user_notifier.dart';
+import 'package:audio_app/services/room_service.dart';
 import 'package:audio_app/utils/app_data.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
@@ -20,7 +21,7 @@ class SocketManager {
     isSocketInitialized = true;
 
     socket.on('connected', (_) {
-      debugPrint('connected to SOCKET');
+      debugPrint('user connected to SOCKET');
     });
 
     socket.on("userInfo", (data) {
@@ -28,6 +29,8 @@ class SocketManager {
       AppProviderContainer.instance
           .read(userNotifierProvider.notifier)
           .updateUser(data['id'], data['name']);
+
+      RoomService.shared.addToAllRooms(data['id']);
     });
 
     socket.on('allUsers', (data) {

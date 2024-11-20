@@ -6,5 +6,7 @@ class AppProviderContainer {
   static num? currentRoomId;
   static Room? currentRoom;
   static EventsListener<RoomEvent>? listener;
+  static Map<String, Room> allRooms = {};
+  static Map<String, EventsListener<RoomEvent>> allRoomsListeners = {};
   // static User? userData;
 }
