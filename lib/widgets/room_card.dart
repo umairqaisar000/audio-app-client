@@ -39,19 +39,30 @@ class _RoomCardState extends State<RoomCard> {
           AppProviderContainer.allRoomsListeners[widget.room.id.toString()];
 
       listener?.on<TrackPublishedEvent>((e) {
-        if (e.publication.kind == TrackType.AUDIO) {
+        if (e.publication.kind == TrackType.AUDIO &&
+            e.participant.identity !=
+                AppProviderContainer.instance
+                    .read(userNotifierProvider)
+                    ?.name) {
           if (!e.publication.subscribed) {
-            unawaited(e.publication.subscribe());
+            e.publication.subscribe();
           }
         }
+      });
+      listener?.on<TrackSubscribedEvent>((e) {
+        muteOrUnmuteAllTracks(roomId: widget.room.name, enabled: false);
       });
       Room? room = AppProviderContainer.allRooms[widget.room.id.toString()];
       if (room != null) {
         // Also subscribe to tracks published before participant joined
         for (RemoteParticipant participant in room.remoteParticipants.values) {
           for (RemoteTrackPublication publication
-              in participant.trackPublications.values) {
-            if (publication.kind == TrackType.AUDIO) {
+              in participant.audioTrackPublications) {
+            if (publication.kind == TrackType.AUDIO &&
+                participant.identity !=
+                    AppProviderContainer.instance
+                        .read(userNotifierProvider)
+                        ?.name) {
               if (!publication.subscribed) {
                 publication.subscribe();
               }
@@ -71,6 +82,30 @@ class _RoomCardState extends State<RoomCard> {
         }
       });
     });
+  }
+
+  Future<void> muteOrUnmuteAllTracks({
+    required String roomId,
+    bool enabled = true,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    Room? room = AppProviderContainer.allRooms[widget.room.id.toString()];
+    if (room != null) {
+      // Also subscribe to tracks published before participant joined
+      for (RemoteParticipant participant in room.remoteParticipants.values) {
+        for (RemoteTrackPublication publication
+            in participant.audioTrackPublications) {
+          if (publication.kind == TrackType.AUDIO) {
+            if (publication.subscribed) {
+              final track = publication.track;
+              if (track != null) {
+                publication.track?.mediaStreamTrack.enabled = enabled;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   @override
