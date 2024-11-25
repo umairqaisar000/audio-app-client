@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:audio_app/config/endpoints.dart';
 import 'package:audio_app/models/room.dart';
+import 'package:audio_app/models/user.dart';
 import 'package:audio_app/providers/user_notifier.dart';
 import 'package:audio_app/services/room_service.dart';
 import 'package:audio_app/utils/app_data.dart';
@@ -25,6 +26,7 @@ class _RoomCardState extends State<RoomCard> {
   bool _enableAudio = true;
   StreamSubscription? _subscription;
   MediaDevice? _selectedAudioDevice;
+  List<String> activeSpeakers = [];
 
   @override
   void initState() {
@@ -32,6 +34,43 @@ class _RoomCardState extends State<RoomCard> {
     _subscription =
         Hardware.instance.onDeviceChange.stream.listen(_loadDevices);
     Hardware.instance.enumerateDevices().then(_loadDevices);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      var listener =
+          AppProviderContainer.allRoomsListeners[widget.room.id.toString()];
+
+      listener?.on<TrackPublishedEvent>((e) {
+        if (e.publication.kind == TrackType.AUDIO) {
+          if (!e.publication.subscribed) {
+            unawaited(e.publication.subscribe());
+          }
+        }
+      });
+      Room? room = AppProviderContainer.allRooms[widget.room.id.toString()];
+      if (room != null) {
+        // Also subscribe to tracks published before participant joined
+        for (RemoteParticipant participant in room.remoteParticipants.values) {
+          for (RemoteTrackPublication publication
+              in participant.trackPublications.values) {
+            if (publication.kind == TrackType.AUDIO) {
+              if (!publication.subscribed) {
+                publication.subscribe();
+              }
+            }
+          }
+        }
+      }
+
+      listener?.on<ActiveSpeakersChangedEvent>((event) {
+        if (mounted) {
+          setState(() {
+            activeSpeakers = [];
+            for (var speaker in event.speakers) {
+              activeSpeakers.add(speaker.identity);
+            }
+          });
+        }
+      });
+    });
   }
 
   @override
@@ -173,24 +212,40 @@ class _RoomCardState extends State<RoomCard> {
                   children: <Widget>[
                     ...List.generate(max(widget.room.users.length, 5), (index) {
                       String initials = "";
+                      User? user;
                       if (widget.room.users.length > index) {
                         // Extract the user from the room's users list based on index
-                        final user = widget.room.users.values.toList()[index];
+                        user = widget.room.users.values.toList()[index];
                         // Extract initials from the user's name
                         initials = getInitials(user.name);
                       }
 
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: CircleAvatar(
-                          radius: 32,
-                          backgroundColor: Theme.of(context).focusColor,
-                          child: Text(
-                            initials,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeInOut,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white
+                                  .withOpacity(0.5), // White with low opacity
+                              width: activeSpeakers.contains(user?.name ?? '')
+                                  ? 6
+                                  : 2, // Animate border width
+                            ),
+                            color: Theme.of(context).focusColor,
+                          ),
+                          child: CircleAvatar(
+                            radius: 32, // Inner CircleAvatar stays consistent
+                            backgroundColor: Colors.transparent,
+                            child: Text(
+                              initials,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),

@@ -112,11 +112,11 @@ class RoomService {
           // Create a Listener before connecting
           final listener = room.createListener();
           await room.connect(url, token,
-              connectOptions: const ConnectOptions());
-          var sid = await room.getSid();
-          AppProviderContainer.allRooms[sid] = room;
-          AppProviderContainer.allRoomsListeners[sid] = listener;
-          _setUpListeners(listener);
+              connectOptions: const ConnectOptions(autoSubscribe: false));
+          if (room.name != null) {
+            AppProviderContainer.allRooms[room.name!] = room;
+            AppProviderContainer.allRoomsListeners[room.name!] = listener;
+          }
         }
       } else {
         debugPrint('Error with fetching profiles');

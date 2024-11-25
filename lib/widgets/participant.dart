@@ -117,68 +117,72 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
 
   // Notify Flutter that UI re-build is required, but we don't set anything here
   // since the updated values are computed properties.
-  void _onParticipantChanged() => setState(() {});
+  void _onParticipantChanged() {
+    setState(() {});
+  }
 
   // Widgets to show above the info bar
   List<Widget> extraWidgets(bool isScreenShare) => [];
 
   @override
-  Widget build(BuildContext ctx) => Container(
-        foregroundDecoration: BoxDecoration(
-          border: widget.participant.isSpeaking && !isScreenShare
-              ? Border.all(
-                  width: 5,
-                  color: Theme.of(context).primaryColor,
-                )
-              : null,
-        ),
-        decoration: BoxDecoration(
-          color: Theme.of(ctx).cardColor,
-        ),
-        child: Stack(
-          children: [
-            // Video
-            InkWell(
-              onTap: () => setState(() => _visible = !_visible),
-              child: activeVideoTrack != null && !activeVideoTrack!.muted
-                  ? VideoTrackRenderer(
-                      activeVideoTrack!,
-                      fit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
-                    )
-                  : AudioUserWidget(
-                      userName: getInitials(widget.participant.identity)),
-            ),
-            // if (widget.showStatsLayer)
-            //   Positioned(
-            //       top: 30,
-            //       right: 30,
-            //       child: ParticipantStatsWidget(
-            //         participant: widget.participant,
-            //       )),
-            // Bottom bar
-            // Align(
-            //   alignment: Alignment.bottomCenter,
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.stretch,
-            //     mainAxisSize: MainAxisSize.min,
-            //     children: [
-            //       ...extraWidgets(isScreenShare),
-            //       ParticipantInfoWidget(
-            //         title: widget.participant.name.isNotEmpty
-            //             ? '${widget.participant.name} (${widget.participant.identity})'
-            //             : widget.participant.identity,
-            //         audioAvailable: audioPublication?.muted == false &&
-            //             audioPublication?.subscribed == true,
-            //         connectionQuality: widget.participant.connectionQuality,
-            //         isScreenShare: isScreenShare,
-            //         enabledE2EE: widget.participant.isEncrypted,
-            //       ),
-            //     ],
-            //   ),
-            // ),
-          ],
-        ),
-      );
+  Widget build(BuildContext ctx) {
+    return Container(
+      foregroundDecoration: BoxDecoration(
+        border: widget.participant.isSpeaking && !isScreenShare
+            ? Border.all(
+                width: 5,
+                color: Theme.of(context).primaryColor,
+              )
+            : null,
+      ),
+      decoration: BoxDecoration(
+        color: Theme.of(ctx).cardColor,
+      ),
+      child: Stack(
+        children: [
+          // Video
+          InkWell(
+            onTap: () => setState(() => _visible = !_visible),
+            child: activeVideoTrack != null && !activeVideoTrack!.muted
+                ? VideoTrackRenderer(
+                    activeVideoTrack!,
+                    fit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
+                  )
+                : AudioUserWidget(
+                    userName: getInitials(widget.participant.identity)),
+          ),
+          // if (widget.showStatsLayer)
+          //   Positioned(
+          //       top: 30,
+          //       right: 30,
+          //       child: ParticipantStatsWidget(
+          //         participant: widget.participant,
+          //       )),
+          // Bottom bar
+          // Align(
+          //   alignment: Alignment.bottomCenter,
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.stretch,
+          //     mainAxisSize: MainAxisSize.min,
+          //     children: [
+          //       ...extraWidgets(isScreenShare),
+          //       ParticipantInfoWidget(
+          //         title: widget.participant.name.isNotEmpty
+          //             ? '${widget.participant.name} (${widget.participant.identity})'
+          //             : widget.participant.identity,
+          //         audioAvailable: audioPublication?.muted == false &&
+          //             audioPublication?.subscribed == true,
+          //         connectionQuality: widget.participant.connectionQuality,
+          //         isScreenShare: isScreenShare,
+          //         enabledE2EE: widget.participant.isEncrypted,
+          //       ),
+          //     ],
+          //   ),
+          // ),
+        ],
+      ),
+    );
+  }
 }
 
 class _LocalParticipantWidgetState
